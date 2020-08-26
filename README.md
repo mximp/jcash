@@ -1,4 +1,4 @@
 # jcash
-Personal finance management framework
+Personal finance management tool
 
 Wiki: https://github.com/mximp/jcash/wiki
