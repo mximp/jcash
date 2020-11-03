@@ -8,11 +8,11 @@ public class Account {
 
 //  todo: make a separate class/enum for ccy
     private final String ccy;
+    private final String name;
 
     private final List<Account> children;
     private final NavigableMap<LocalDate, Double> balance;
     private boolean closed;
-    private String name;
 
     public Account(String name, String ccy) {
         this.name = name;
@@ -28,6 +28,12 @@ public class Account {
 
     public static Account of(String name) {
         return of(name, RUB_CCY);
+    }
+
+    public static Account of(String name, String ccy, double initAmount) {
+        Account account = of(name, ccy);
+        account.setBalance(LocalDate.now(), initAmount);
+        return account;
     }
 
     public String getCcy() {
@@ -48,6 +54,10 @@ public class Account {
         }
 
         return 0;
+    }
+
+    public double getBalance() {
+        return getBalance(LocalDate.now());
     }
 
     public List<Account> getChildren() {
@@ -87,11 +97,9 @@ public class Account {
         this.balance.put(date, amount);
     }
 
-    public void rename(String name) {
-        this.name = name;
-    }
-
     public void close() {
         this.closed = true;
     }
+
+
 }

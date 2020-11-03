@@ -24,6 +24,9 @@ public class AccountTest {
         account = Account.of("a name");
         Assertions.assertEquals("a name", account.getName());
         Assertions.assertEquals(RUB_CCY, account.getCcy());
+
+        account = Account.of("account_with_balance", RUB_CCY, 103.5);
+        Assertions.assertEquals(103.5, account.getBalance());
     }
 
     @Test
@@ -41,8 +44,8 @@ public class AccountTest {
     @Test
     public void equality() {
         Account accLeft = Account.of("");
-        Account accRight = Account.of("");
 
+        Account accRight = Account.of("");
         Assertions.assertEquals(accLeft, accRight);
 
         accRight = Account.of("1");
@@ -67,14 +70,14 @@ public class AccountTest {
         Assertions.assertEquals(amount, acc.getBalance(date.plus(5, ChronoUnit.DAYS)));
     }
 
-    @Test
-    public void rename() {
-        Account account = Account.of("");
-
-        account.rename("acc1");
-
-        Assertions.assertEquals("acc1", account.getName());
-    }
+//    @Test
+//    public void rename() {
+//        Account account = Account.of("");
+//
+//        account.rename("acc1");
+//
+//        Assertions.assertEquals("acc1", account.getName());
+//    }
 
     @Test
     public void close() {
