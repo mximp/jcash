@@ -71,14 +71,12 @@ public class Account {
         Account account = (Account) o;
         return closed == account.closed &&
                 Objects.equals(ccy, account.ccy) &&
-                Objects.equals(children.size(), account.children.size()) &&
-                Objects.equals(balance.size(), account.balance.size()) &&
                 Objects.equals(name, account.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ccy, children.size(), balance.size(), closed, name);
+        return Objects.hash(ccy, name);
     }
 
     public String getName() {
@@ -87,5 +85,13 @@ public class Account {
 
     public void setBalance(LocalDate date, double amount) {
         this.balance.put(date, amount);
+    }
+
+    public void rename(String name) {
+        this.name = name;
+    }
+
+    public void close() {
+        this.closed = true;
     }
 }

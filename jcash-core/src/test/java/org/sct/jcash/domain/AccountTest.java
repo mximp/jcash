@@ -44,6 +44,12 @@ public class AccountTest {
         Account accRight = Account.of("");
 
         Assertions.assertEquals(accLeft, accRight);
+
+        accRight = Account.of("1");
+        Assertions.assertNotEquals(accRight, accLeft);
+
+        accRight = Account.of("", "USD");
+        Assertions.assertNotEquals(accRight, accLeft);
     }
 
     @Test
@@ -61,13 +67,21 @@ public class AccountTest {
         Assertions.assertEquals(amount, acc.getBalance(date.plus(5, ChronoUnit.DAYS)));
     }
 
+    @Test
+    public void rename() {
+        Account account = Account.of("");
 
-    // todo: account balance for particular date
-    // todo: parent-child relationship:
-    //              RUR -> RUR (OK)
-    //              RUR -> USD (ERROR)
-    // todo: USD currency account
-    // todo: make Account.of()
-    // todo: rename account
-    // todo: close account
+        account.rename("acc1");
+
+        Assertions.assertEquals("acc1", account.getName());
+    }
+
+    @Test
+    public void close() {
+        Account account = Account.of("");
+
+        account.close();
+
+        Assertions.assertTrue(account.isClosed());
+    }
 }
