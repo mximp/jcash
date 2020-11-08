@@ -18,6 +18,7 @@ public class Account {
     private final NavigableMap<LocalDate, Double> balance;
 
     private boolean closed;
+    private final Set<AccountOperation> operations = new TreeSet<>(Comparator.comparing(AccountOperation::getOperationDate));
 
     public Account(String id, String name, String ccy) {
         this.name = name;
@@ -123,5 +124,13 @@ public class Account {
 
     public void rename(String newName) {
         this.name = newName;
+    }
+
+    public Collection<AccountOperation> getOperations() {
+        return Collections.unmodifiableCollection(operations);
+    }
+
+    public void addOperation(AccountOperation accountOperation) {
+        operations.add(accountOperation);
     }
 }

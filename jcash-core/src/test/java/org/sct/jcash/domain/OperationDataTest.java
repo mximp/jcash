@@ -56,4 +56,6 @@ public class OperationDataTest {
         Assertions.assertEquals(0, oppositeData.getAmount());
     }
 
+
+
 }

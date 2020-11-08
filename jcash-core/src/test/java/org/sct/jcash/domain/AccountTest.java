@@ -4,7 +4,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.sct.jcash.domain.Account.RUB_CCY;
 
@@ -55,7 +59,6 @@ public class AccountTest {
     }
 
 
-
     @Test
     public void equality() {
 
@@ -80,8 +83,6 @@ public class AccountTest {
         Assertions.assertNotEquals(
                 Account.of(""),
                 Account.of("", "USD"));
-
-
     }
 
     @Test
@@ -101,12 +102,30 @@ public class AccountTest {
     }
 
     @Test
-    public void addOperationTest() {
+    public void operationsTest() {
+        Account acc = Account.of("");
 
-    }
+        Collection<AccountOperation> operations = acc.getOperations();
 
-    @Test
-    public void getOperationsTest() {
+        // returned collection is unmodifiable
+        Assertions.assertThrows(UnsupportedOperationException.class,
+                () -> operations.add(operation("2020-08-01T10:15:30")));
+
+        // adding operations
+        acc.addOperation(operation("2020-08-01T10:15:30"));
+        acc.addOperation(operation("2020-09-01T10:15:30"));
+        acc.addOperation(operation("2020-07-01T10:15:30"));
+        acc.addOperation(operation("2020-07-01T10:15:31"));
+
+        Assertions.assertEquals(4, operations.size());
+
+        // operations are stored ordered by date/time
+        Assertions.assertIterableEquals(
+                List.of(timestamp("2020-07-01T10:15:30"),
+                        timestamp("2020-07-01T10:15:31"),
+                        timestamp("2020-08-01T10:15:30"),
+                        timestamp("2020-09-01T10:15:30")),
+                operations.stream().map(AccountOperation::getOperationDate).collect(Collectors.toList()));
 
     }
 
@@ -127,4 +146,18 @@ public class AccountTest {
 
         Assertions.assertTrue(account.isClosed());
     }
+
+    private static AccountOperation operation(String timestamp) {
+        return new AccountOperation() {
+            @Override
+            public LocalDateTime getOperationDate() {
+                return timestamp(timestamp);
+            }
+        };
+    }
+
+    private static LocalDateTime timestamp(String timestamp) {
+        return LocalDateTime.parse(timestamp);
+    }
+
 }
