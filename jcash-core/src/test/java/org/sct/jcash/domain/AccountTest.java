@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 import static org.sct.jcash.domain.Account.RUB_CCY;
 
@@ -89,6 +88,11 @@ public class AccountTest {
 
         Assertions.assertEquals(0.0, acc.getBalance(date.minus(1, ChronoUnit.DAYS)));
         Assertions.assertEquals(amount, acc.getBalance(date.plus(5, ChronoUnit.DAYS)));
+    }
+
+    @Test
+    public void addOperation() {
+
     }
 
     @Test
