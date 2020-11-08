@@ -79,6 +79,14 @@ public class Account {
     }
 
     public boolean addChild(Account childAccount) {
+        if(childAccount == null) {
+            throw new IllegalArgumentException("Trying to add null child account");
+        }
+
+        if(!children.isEmpty() && children.contains(childAccount)) {
+            return false;
+        }
+
         children.add(childAccount);
         return true;
     }

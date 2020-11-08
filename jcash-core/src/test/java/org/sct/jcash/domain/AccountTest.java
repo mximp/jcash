@@ -36,7 +36,7 @@ public class AccountTest {
     }
 
     @Test
-    public void parentChildRelation() {
+    public void addChild() {
         Account parentAccount = Account.of("");
         Account childAccount = Account.of("");
 
@@ -45,7 +45,16 @@ public class AccountTest {
         Assertions.assertTrue(added);
         Assertions.assertEquals(1, parentAccount.getChildren().size());
         Assertions.assertEquals(childAccount, parentAccount.getChildren().get(0));
+
+        // cannot add the same account twice
+        Assertions.assertFalse(parentAccount.addChild(childAccount));
+        Assertions.assertEquals(1, parentAccount.getChildren().size());
+
+        // cannot add null child
+        Assertions.assertThrows(IllegalArgumentException.class, () -> parentAccount.addChild(null));
     }
+
+
 
     @Test
     public void equality() {
@@ -77,6 +86,7 @@ public class AccountTest {
 
     @Test
     public void balance() {
+        // todo move balance api into a separate class BalanceCalculator (maybe related to an account)
         Account acc = Account.of("acc");
 
         LocalDate date = LocalDate.now();
@@ -91,7 +101,12 @@ public class AccountTest {
     }
 
     @Test
-    public void addOperation() {
+    public void addOperationTest() {
+
+    }
+
+    @Test
+    public void getOperationsTest() {
 
     }
 
