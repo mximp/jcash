@@ -8,22 +8,32 @@ public class Account {
 
 //  todo: make a separate class/enum for ccy
     private final String ccy;
-    private final String name;
+    private final String id;
+
+    private String name;
 
     private final List<Account> children;
+
+    // todo: housekeeping of this - make separate class?
     private final NavigableMap<LocalDate, Double> balance;
+
     private boolean closed;
 
-    public Account(String name, String ccy) {
+    public Account(String id, String name, String ccy) {
         this.name = name;
         this.ccy = ccy;
         this.closed = false;
         this.children = new ArrayList<>();
         this.balance = new TreeMap<>();
+        this.id = id;
     }
 
     public static Account of(String name, String ccy) {
-        return new Account(name, ccy);
+        return of(UUID.randomUUID().toString(), name, ccy);
+    }
+
+    public static Account of(String id, String name, String ccy) {
+        return new Account(id, name, ccy);
     }
 
     public static Account of(String name) {
@@ -73,20 +83,17 @@ public class Account {
         return true;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return closed == account.closed &&
-                Objects.equals(ccy, account.ccy) &&
-                Objects.equals(name, account.name);
+        return Objects.equals(id, account.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ccy, name);
+        return Objects.hash(id);
     }
 
     public String getName() {
@@ -102,4 +109,11 @@ public class Account {
     }
 
 
+    public String getId() {
+        return id;
+    }
+
+    public void rename(String newName) {
+        this.name = newName;
+    }
 }

@@ -1,19 +1,29 @@
 package org.sct.jcash.domain;
 
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Classifier domain object
+ */
 public class Classifier {
+    public static final Classifier EMPTY_CLASSIFIER = new Classifier("");
     private final String classifierString;
 
     public static Classifier of(String classifierString) {
-        return new Classifier(classifierString);
+        String normalizedString = normalizeClassifierString(classifierString);
+
+        if(normalizedString.equals("")) {
+            return EMPTY_CLASSIFIER;
+        }
+
+        return new Classifier(normalizedString);
     }
 
-    public Classifier(String classifierString) {
-
-        this.classifierString = normalizeClassifierString(classifierString);
+    private Classifier(String classifierString) {
+        this.classifierString = classifierString;
     }
 
     @Override
@@ -21,8 +31,20 @@ public class Classifier {
         return classifierString;
     }
 
-    public Classifier getParent() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Classifier that = (Classifier) o;
+        return Objects.equals(classifierString, that.classifierString);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(classifierString);
+    }
+
+    public Classifier getParent() {
         long count = new Scanner(classifierString).findAll("\\.").count();
         String subClassifierString = Stream.of(classifierString
                 .split("\\."))

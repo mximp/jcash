@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static org.sct.jcash.domain.Account.RUB_CCY;
 
@@ -15,9 +16,10 @@ public class AccountTest {
         Account account = Account.of("Account name", RUB_CCY);
         Assertions.assertNotNull(account);
 
+        Assertions.assertFalse(account.getId().isBlank());
         Assertions.assertEquals("Account name", account.getName());
         Assertions.assertEquals(RUB_CCY, account.getCcy());
-        Assertions.assertEquals(0.0, account.getBalance(LocalDate.now()));
+        Assertions.assertEquals(0.0, account.getBalance());
         Assertions.assertEquals(0, account.getChildren().size());
         Assertions.assertFalse(account.isClosed());
 
@@ -27,6 +29,11 @@ public class AccountTest {
 
         account = Account.of("account_with_balance", RUB_CCY, 103.5);
         Assertions.assertEquals(103.5, account.getBalance());
+
+        account = Account.of("id", "name", "USD");
+        Assertions.assertEquals("id", account.getId());
+        Assertions.assertEquals("name", account.getName());
+        Assertions.assertEquals("USD", account.getCcy());
     }
 
     @Test
@@ -43,16 +50,30 @@ public class AccountTest {
 
     @Test
     public void equality() {
-        Account accLeft = Account.of("");
 
-        Account accRight = Account.of("");
-        Assertions.assertEquals(accLeft, accRight);
+        // equality by id only
 
-        accRight = Account.of("1");
-        Assertions.assertNotEquals(accRight, accLeft);
+        Assertions.assertEquals(
+                Account.of("1", "acc1", "EUR"),
+                Account.of("1", "acc2", "USD"));
 
-        accRight = Account.of("", "USD");
-        Assertions.assertNotEquals(accRight, accLeft);
+        Assertions.assertNotEquals(
+                Account.of("1", "acc1", "EUR"),
+                Account.of("2", "acc1", "EUR"));
+
+        Assertions.assertNotEquals(
+                Account.of(""),
+                Account.of(""));
+
+        Assertions.assertNotEquals(
+                Account.of(""),
+                Account.of("1"));
+
+        Assertions.assertNotEquals(
+                Account.of(""),
+                Account.of("", "USD"));
+
+
     }
 
     @Test
@@ -70,14 +91,14 @@ public class AccountTest {
         Assertions.assertEquals(amount, acc.getBalance(date.plus(5, ChronoUnit.DAYS)));
     }
 
-//    @Test
-//    public void rename() {
-//        Account account = Account.of("");
-//
-//        account.rename("acc1");
-//
-//        Assertions.assertEquals("acc1", account.getName());
-//    }
+    @Test
+    public void rename() {
+        Account account = Account.of("");
+
+        account.rename("acc1");
+
+        Assertions.assertEquals("acc1", account.getName());
+    }
 
     @Test
     public void close() {
