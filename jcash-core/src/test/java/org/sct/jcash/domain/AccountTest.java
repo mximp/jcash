@@ -128,6 +128,14 @@ public class AccountTest {
     }
 
     @Test
+    public void operationCcy() {
+        Account acc = sampleRURAccount();
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> acc.addOperation(operation("2020-07-01T10:15:30", "USD")));
+    }
+
+    @Test
     public void rename() {
         Account account = sampleRURAccount();
 
@@ -150,6 +158,14 @@ public class AccountTest {
     }
 
     private static AccountOperation operation(String timestamp, double amount) {
+        return operation(timestamp, RUB_CCY, amount);
+    }
+
+    private static AccountOperation operation(String timestamp, String ccy) {
+        return operation(timestamp, ccy, 1.0);
+    }
+
+    private static AccountOperation operation(String timestamp, String ccy, double amount) {
         return new AccountOperation() {
             @Override
             public LocalDateTime getOperationDate() {
@@ -160,6 +176,9 @@ public class AccountTest {
             public double getAmount() {
                 return amount;
             }
+
+            @Override
+            public String getCcy() {return ccy; }
         };
     }
 

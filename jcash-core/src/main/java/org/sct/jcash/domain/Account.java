@@ -1,8 +1,15 @@
 package org.sct.jcash.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
 
 public class Account {
     public static final String RUB_CCY = "RUB";
@@ -57,6 +64,11 @@ public class Account {
             @Override
             public double getAmount() {
                 return initAmount;
+            }
+
+            @Override
+            public String getCcy() {
+                return ccy;
             }
         });
         return account;
@@ -136,6 +148,11 @@ public class Account {
     }
 
     public void addOperation(AccountOperation accountOperation) {
+        if(!this.ccy.equals(accountOperation.getCcy())) {
+            throw new IllegalArgumentException(String.format("Account ccy=%s doesn't match operation ccy=%s",
+                    this.ccy, accountOperation.getCcy()));
+        }
+
         operations.add(accountOperation);
     }
 }
