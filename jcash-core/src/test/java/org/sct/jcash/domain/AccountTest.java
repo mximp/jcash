@@ -3,9 +3,7 @@ package org.sct.jcash.domain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +39,9 @@ public class AccountTest {
 
     @Test
     public void addChild() {
-        Account parentAccount = Account.of("");
-        Account childAccount = Account.of("");
+        // todo do we need child hierarchy here? maybe create separate structure
+        Account parentAccount = sampleRURAccount();
+        Account childAccount = sampleRURAccount();
 
         boolean added = parentAccount.addChild(childAccount);
 
@@ -62,7 +61,7 @@ public class AccountTest {
     @Test
     public void equality() {
 
-        // equality by id only
+        // Accounts are equal by ID
 
         Assertions.assertEquals(
                 Account.of("1", "acc1", "EUR"),
@@ -87,23 +86,22 @@ public class AccountTest {
 
     @Test
     public void balance() {
-        // todo move balance api into a separate class BalanceCalculator (maybe related to an account)
-        Account acc = Account.of("acc");
+        Account account = sampleRURAccount();
 
-        LocalDate date = LocalDate.now();
-        double amount = 100.15;
-        acc.setBalance(date, amount);
+        account.addOperation(operation("2020-01-20T10:15:30", 101.2432));
+        account.addOperation(operation("2020-01-20T10:15:31", 201.2342));
 
-        double balance = acc.getBalance(date);
-        Assertions.assertEquals(amount, balance);
+        Assertions.assertEquals(302.4774, account.getBalance());
+        Assertions.assertEquals(302.4774, account.getBalance(timestamp("2021-01-20T10:15:31")));
+        Assertions.assertEquals(302.4774, account.getBalance(timestamp("2020-01-20T10:15:31")));
+        Assertions.assertEquals(101.2432, account.getBalance(timestamp("2020-01-20T10:15:30")));
+        Assertions.assertEquals(0, account.getBalance(timestamp("2020-01-20T10:15:29")));
 
-        Assertions.assertEquals(0.0, acc.getBalance(date.minus(1, ChronoUnit.DAYS)));
-        Assertions.assertEquals(amount, acc.getBalance(date.plus(5, ChronoUnit.DAYS)));
     }
 
     @Test
-    public void operationsTest() {
-        Account acc = Account.of("");
+    public void operations() {
+        Account acc = sampleRURAccount();
 
         Collection<AccountOperation> operations = acc.getOperations();
 
@@ -131,7 +129,7 @@ public class AccountTest {
 
     @Test
     public void rename() {
-        Account account = Account.of("");
+        Account account = sampleRURAccount();
 
         account.rename("acc1");
 
@@ -140,7 +138,7 @@ public class AccountTest {
 
     @Test
     public void close() {
-        Account account = Account.of("");
+        Account account = sampleRURAccount();
 
         account.close();
 
@@ -148,16 +146,29 @@ public class AccountTest {
     }
 
     private static AccountOperation operation(String timestamp) {
+        return operation(timestamp, 1.0);
+    }
+
+    private static AccountOperation operation(String timestamp, double amount) {
         return new AccountOperation() {
             @Override
             public LocalDateTime getOperationDate() {
                 return timestamp(timestamp);
+            }
+
+            @Override
+            public double getAmount() {
+                return amount;
             }
         };
     }
 
     private static LocalDateTime timestamp(String timestamp) {
         return LocalDateTime.parse(timestamp);
+    }
+
+    private static Account sampleRURAccount() {
+        return Account.of("");
     }
 
 }

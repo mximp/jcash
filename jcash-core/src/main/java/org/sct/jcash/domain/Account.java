@@ -1,6 +1,7 @@
 package org.sct.jcash.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Account {
@@ -14,21 +15,20 @@ public class Account {
 
     private final List<Account> children;
 
-    // todo: housekeeping of this - make separate class?
-    private final NavigableMap<LocalDate, Double> balance;
-
     private boolean closed;
     private final Set<AccountOperation> operations = new TreeSet<>(Comparator.comparing(AccountOperation::getOperationDate));
 
-    public Account(String id, String name, String ccy) {
+    private Account(String id, String name, String ccy) {
         this.name = name;
         this.ccy = ccy;
         this.closed = false;
         this.children = new ArrayList<>();
-        this.balance = new TreeMap<>();
         this.id = id;
     }
 
+    /**
+     * UUID string is used as account id by default
+     */
     public static Account of(String name, String ccy) {
         return of(UUID.randomUUID().toString(), name, ccy);
     }
@@ -37,13 +37,28 @@ public class Account {
         return new Account(id, name, ccy);
     }
 
+    /**
+     * RUB is used as default ccy
+     */
     public static Account of(String name) {
         return of(name, RUB_CCY);
     }
 
     public static Account of(String name, String ccy, double initAmount) {
         Account account = of(name, ccy);
-        account.setBalance(LocalDate.now(), initAmount);
+
+        LocalDateTime timestamp = LocalDateTime.now();
+        account.addOperation(new AccountOperation() {
+            @Override
+            public LocalDateTime getOperationDate() {
+                return timestamp;
+            }
+
+            @Override
+            public double getAmount() {
+                return initAmount;
+            }
+        });
         return account;
     }
 
@@ -51,24 +66,18 @@ public class Account {
         return ccy;
     }
 
-    public double getBalance(LocalDate date) {
-        if (balance.containsKey(date)) {
-            return balance.get(date);
-        }
-
-        NavigableSet<LocalDate> dates = (NavigableSet<LocalDate>) balance.keySet();
-
-        LocalDate closestDate = dates.stream().filter(d -> d.isBefore(date)).findFirst().orElse(null);
-
-        if(closestDate != null) {
-            return balance.get(closestDate);
-        }
-
-        return 0;
+    /**
+     * Balance which reflect all account operations up until specified timestamp inclusive
+     */
+    public double getBalance(LocalDateTime timestamp) {
+        return operations.stream()
+                .filter(o -> o.getOperationDate().isBefore(timestamp) || o.getOperationDate().isEqual(timestamp))
+                .mapToDouble(AccountOperation::getAmount)
+                .sum();
     }
 
     public double getBalance() {
-        return getBalance(LocalDate.now());
+        return getBalance(LocalDateTime.now());
     }
 
     public List<Account> getChildren() {
@@ -107,10 +116,6 @@ public class Account {
 
     public String getName() {
         return name;
-    }
-
-    public void setBalance(LocalDate date, double amount) {
-        this.balance.put(date, amount);
     }
 
     public void close() {
