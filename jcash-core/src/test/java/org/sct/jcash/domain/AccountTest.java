@@ -153,19 +153,19 @@ public class AccountTest {
         Assertions.assertTrue(account.isClosed());
     }
 
-    private static AccountOperation operation(String timestamp) {
+    public static AccountOperation operation(String timestamp) {
         return operation(timestamp, 1.0);
     }
 
-    private static AccountOperation operation(String timestamp, double amount) {
+    public static AccountOperation operation(String timestamp, double amount) {
         return operation(timestamp, RUB_CCY, amount);
     }
 
-    private static AccountOperation operation(String timestamp, String ccy) {
+    public static AccountOperation operation(String timestamp, String ccy) {
         return operation(timestamp, ccy, 1.0);
     }
 
-    private static AccountOperation operation(String timestamp, String ccy, double amount) {
+    public static AccountOperation operation(String timestamp, String ccy, double amount) {
         return new AccountOperation() {
             @Override
             public LocalDateTime getOperationDate() {
@@ -182,11 +182,11 @@ public class AccountTest {
         };
     }
 
-    private static LocalDateTime timestamp(String timestamp) {
+    public static LocalDateTime timestamp(String timestamp) {
         return LocalDateTime.parse(timestamp);
     }
 
-    private static Account sampleRURAccount() {
+    public static Account sampleRURAccount() {
         return Account.of("");
     }
 
