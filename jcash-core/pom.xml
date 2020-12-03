@@ -4,7 +4,7 @@
 
     <groupId>org.sct.jcash</groupId>
     <artifactId>jcash-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
@@ -14,8 +14,7 @@
 
     <scm>
         <developerConnection>scm:git:https://github.com/mximp/jcash/tree/master/jcash-core</developerConnection>
-      <tag>jcash-core-1.0.0</tag>
-  </scm>
+    </scm>
 
     <build>
         <plugins>
