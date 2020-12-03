@@ -41,9 +41,10 @@ public class OperationTest {
         var expense = FinOperation.of(-100.0, "AC#1");
         expense.classify(Set.of("A")); // already has classifiers
 
-        expense.classify(Set.of("C", "B"));
+        expense.classify(Set.of("A", "C", "B"));
 
         Assertions.assertTrue(expense.getClassifiers().containsAll(Set.of("A", "B", "C")));
+        Assertions.assertEquals(3, expense.getClassifiers().size());
     }
 
     @Test
