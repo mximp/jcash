@@ -14,7 +14,7 @@
     </properties>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/mximp/jcash.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/mximp/jcash/tree/master/jcash-cli-app</developerConnection>
     </scm>
 
     <build>
