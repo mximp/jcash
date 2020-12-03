@@ -4,7 +4,7 @@
 
     <groupId>org.sct.jcash</groupId>
     <artifactId>jcash-core</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
