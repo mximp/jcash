@@ -13,7 +13,7 @@
     </properties>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/mximp/jcash.git/jcash-core</developerConnection>
+        <developerConnection>scm:git:https://github.com/mximp/jcash.git</developerConnection>
     </scm>
 
 
